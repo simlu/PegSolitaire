@@ -9,7 +9,7 @@ namespace Assets.Source {
         private readonly Board _board;
 
         // draw hints
-        private bool _drawHints;
+        private bool _drawHints = true;
 
         // current text displayed
         private string _text = "";
