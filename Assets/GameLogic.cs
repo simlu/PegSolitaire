@@ -226,10 +226,12 @@ namespace Assets {
             // ensure correct position and scale
             gameObject.transform.position = new Vector3(_id % 7 - 3, 0, _id / 7 - 3);
             gameObject.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+            // update the state
+            _Update();
         }
 
         // peg visibility
-        private bool _visible;
+        private bool _visible = true;
         public void SetVisible(bool flag) {
             if (_visible == flag) return;
             _visible = flag;
