@@ -10,6 +10,9 @@ namespace Assets.Source {
         // abstract class to define event actions
         public class EventListener {
             public Action OnEvent;
+            public EventListener(Action OnEventAction) {
+                OnEvent = OnEventAction;
+            }
         }
         // holds all attached listeners
         private readonly List<EventListener> _listeners = new List<EventListener>();

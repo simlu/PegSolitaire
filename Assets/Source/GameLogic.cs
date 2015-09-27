@@ -61,11 +61,7 @@ namespace Assets.Source {
         public GameLogic() {
             _board = new Board();
             // listen to board changes
-            _board.AddListener(new Board.EventListener() {
-                OnEvent = () => {
-                    UpdateBoard();
-                }
-            });
+            _board.AddListener(new Board.EventListener(UpdateBoard));
         }
 
         // Initialize everything
