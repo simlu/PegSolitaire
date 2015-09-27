@@ -3,8 +3,8 @@ using System.Linq;
 using UnityEngine;
 
 namespace Assets.Source {
-    /* Solver utility for a given board */
 
+    /* Solver utility for a given board */
     internal class Solver {
         // caches all found solutions (and their paths)
         private static readonly Dictionary<long, long[]> SeenSolutions = new Dictionary<long, long[]>();

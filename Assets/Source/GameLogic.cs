@@ -8,6 +8,9 @@ namespace Assets.Source {
     public class GameLogic : MonoBehaviour {
         private readonly Board _board;
 
+        // draw hints
+        private bool _drawHints;
+
         // current text displayed
         private string _text = "";
         // current solution
@@ -79,6 +82,9 @@ namespace Assets.Source {
             if (Event.current.Equals(Event.KeyboardEvent("r"))) {  // #^r
                 _board.Reset();
             }
+            if (Event.current.Equals(Event.KeyboardEvent("h"))) {  // #^r
+                _drawHints = !_drawHints;
+            }
             if (Event.current.Equals(Event.KeyboardEvent("s"))) {  // #^s
                 // find a solution and apply the next step
                 long[] solution = Solver.Solve(_board.GetCurrentBoard());
@@ -90,18 +96,25 @@ namespace Assets.Source {
             GUI.Label(new Rect(40, 40, 120, 50), _text);
         }
 
-        // Update is called once per frame
         // ReSharper disable once UnusedMember.Local
-        void Update() {
+        private void OnPostRender() {
+            if (!_drawHints) return;
             if (_solution.Length > 1) {
                 int[] move = Solver.GetNextMove(_solution);
                 if (move != null) {
-                    Vector3 v1 = new Vector3(move[0]%7 - 3, 0, move[0]/7 - 3);
-                    Vector3 v2 = new Vector3(move[1]%7 - 3, 0, move[1]/7 - 3);
-                    Debug.DrawLine(v1, v2, Color.red);
+                    // Apply the line material
+                    Materials.LineMaterial.SetPass(0);
+                    // Draw Line
+                    GL.PushMatrix();
+                    GL.Begin(GL.LINES);
+                    GL.Color(new Color(1, 0, 0, 1F));
+                    GL.Vertex3(move[0] % 7 - 3, 0, move[0] / 7 - 3);
+                    GL.Vertex3(move[1] % 7 - 3, 0, move[1] / 7 - 3);
+                    GL.End();
+                    GL.PopMatrix();
                 }
             }
-        
         }
+
     }
 }

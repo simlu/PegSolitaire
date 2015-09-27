@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
 namespace Assets.Source {
-    /* Holds constants */
 
+    /* Holds constants */
     public static class Constants {
         public const long InitialBoard = 124141717933596L;
         public const long GoalBoard = 16777216L;

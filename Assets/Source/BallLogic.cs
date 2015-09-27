@@ -3,40 +3,27 @@
 namespace Assets.Source {
 
     /* Handles the "Pegs" in the engine and the user interaction with them */
-
     internal class BallLogic : MonoBehaviour {
-
-        // helper method to convert r,g,b,a into a Material with that color and transparency
-        private static Material MakeColor(float r, float g, float b, float a) {
-            return new Material(Shader.Find("Transparent/Diffuse")) {color = new Color(r, g, b, a)};
-        }
-
-        // the different "Peg" states as Materials
-        private static readonly Material InvisibleMaterial = MakeColor(0, 0, 0, 0);
-        private static readonly Material InvisibleOverMaterial = MakeColor(0, 0, 0.1f, 0.5f);
-        private static readonly Material VisibleMaterial = MakeColor(0, 0.1f, 0, 0.7f);
-        private static readonly Material VisibleOverMaterial = MakeColor(0.3f, 0, 0, 0.7f);
-        private static readonly Material VisibleSelectedBallMaterial = MakeColor(0, 0, 0.1f, 0.7f);
 
         // Ensure that this "Peg" has the right material assigned to it
         private void _Update() {
             if (_visible && _selected == _id) {
-                gameObject.GetComponent<Renderer>().material = VisibleSelectedBallMaterial;
+                gameObject.GetComponent<Renderer>().material = Materials.VisibleSelectedBallMaterial;
                 return;
             }
             if (_visible && _over == _id && _selected == -1) {
-                gameObject.GetComponent<Renderer>().material = VisibleOverMaterial;
+                gameObject.GetComponent<Renderer>().material = Materials.VisibleOverMaterial;
                 return;
             }
             if (_visible) {
-                gameObject.GetComponent<Renderer>().material = VisibleMaterial;
+                gameObject.GetComponent<Renderer>().material = Materials.VisibleMaterial;
                 return;
             }
             if (!_visible && _selected != -1 && _over == _id && _board.IsValidMove(_selected, _over)) {
-                gameObject.GetComponent<Renderer>().material = InvisibleOverMaterial;
+                gameObject.GetComponent<Renderer>().material = Materials.InvisibleOverMaterial;
                 return;
             }
-            gameObject.GetComponent<Renderer>().material = InvisibleMaterial;
+            gameObject.GetComponent<Renderer>().material = Materials.InvisibleMaterial;
         }
 
         private Board _board; // board that this peg belongs to

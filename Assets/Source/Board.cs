@@ -5,7 +5,6 @@ using UnityEngine;
 namespace Assets.Source {
 
     /* Peg board data structure and interaction logic, including undo and redo */
-
     internal class Board {
         // observer that is notified when the board state changes
         private readonly GameLogic _observer;
