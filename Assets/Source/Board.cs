@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Assets {
+namespace Assets.Source {
 
     /* Peg board data structure and interaction logic, including undo and redo */
 

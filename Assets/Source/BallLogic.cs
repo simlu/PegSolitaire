@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Assets {
+namespace Assets.Source {
 
     /* Handles the "Pegs" in the engine and the user interaction with them */
 

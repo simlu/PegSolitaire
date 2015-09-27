@@ -2,7 +2,7 @@
 using System.Linq;
 using UnityEngine;
 
-namespace Assets {
+namespace Assets.Source {
     /* Solver utility for a given board */
 
     internal class Solver {

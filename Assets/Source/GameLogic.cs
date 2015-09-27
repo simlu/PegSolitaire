@@ -2,7 +2,7 @@
 using System.Threading;
 using UnityEngine;
 
-namespace Assets {
+namespace Assets.Source {
 
     /* The core game logic */
     public class GameLogic : MonoBehaviour {
