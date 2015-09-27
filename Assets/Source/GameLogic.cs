@@ -59,7 +59,13 @@ namespace Assets.Source {
 
         // constructor
         public GameLogic() {
-            _board = new Board(this);
+            _board = new Board();
+            // listen to board changes
+            _board.AddListener(new Board.EventListener() {
+                OnEvent = () => {
+                    UpdateBoard();
+                }
+            });
         }
 
         // Initialize everything

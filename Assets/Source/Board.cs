@@ -6,11 +6,23 @@ namespace Assets.Source {
 
     /* Peg board data structure and interaction logic, including undo and redo */
     internal class Board {
-        // observer that is notified when the board state changes
-        private readonly GameLogic _observer;
-        // constructor
-        public Board(GameLogic observer) {
-            _observer = observer;
+
+        // abstract class to define event actions
+        public class EventListener {
+            public Action OnEvent;
+        }
+        // holds all attached listeners
+        private readonly List<EventListener> _listeners = new List<EventListener>();
+        // attach a listener to this instance
+        public void AddListener(EventListener listener) {
+            _listeners.Add(listener);
+        }
+
+        // notify all attached listeners
+        private void NotifyListeners() {
+            foreach (EventListener listener in _listeners) {
+                listener.OnEvent();
+            }
         }
 
         // ----------------------
@@ -49,7 +61,7 @@ namespace Assets.Source {
                 _boards.RemoveRange(_idx + 1, _boards.Count - (_idx + 1));
                 _boards.Add(newBoard);
                 _idx++;
-                _observer.UpdateBoard();
+                NotifyListeners();
                 return true;
             }
             return false;
@@ -58,13 +70,13 @@ namespace Assets.Source {
         // undo a move if possible
         public void Undo() {
             _idx = _idx == 0 ? 0 : _idx - 1;
-            _observer.UpdateBoard();
+            NotifyListeners();
         }
 
         // redo a move if possible
         public void Redo() {
             _idx = _idx == _boards.Count - 1 ? _idx : _idx + 1;
-            _observer.UpdateBoard();
+            NotifyListeners();
         }
 
         // retrieve the current board
@@ -76,7 +88,7 @@ namespace Assets.Source {
         public void Reset() {
             _idx = 0;
             _boards.RemoveRange(1, _boards.Count - 1);
-            _observer.UpdateBoard();
+            NotifyListeners();
         }
     }
 }
