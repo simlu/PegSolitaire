@@ -43,7 +43,7 @@ namespace Assets.Source {
                 lock(this) {
                     // make sure we only update if this board didn't change
                     if (_board.GetCurrentBoard() == currentBoard) {
-                        _texture = solvable ? Textures.OnTrack : Textures.Fail;
+                        _texture = solvable ? Textures.Danger : Textures.Fail;
                         _solution = solution;
                     }
                 }
