@@ -93,5 +93,15 @@ namespace Assets.Source {
             _boards.RemoveRange(1, _boards.Count - 1);
             NotifyListeners();
         }
+
+        // do a solution step
+        public void SolveNextStep() {
+            // find a solution and apply the next step
+            long[] solution = Solver.Solve(_boards[_idx]);
+            int[] move = Solver.GetNextMove(solution);
+            if (move != null) {
+                Move(move[0], move[1]);
+            }
+        }
     }
 }

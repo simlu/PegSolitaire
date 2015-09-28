@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using UnityEngine;
 
@@ -12,7 +13,7 @@ namespace Assets.Source {
         private bool _drawHints = true;
 
         // current text displayed
-        private string _text = "";
+        private Texture2D _texture = Textures.OnTrack;
         // current solution
         private long[] _solution = new long[0];
 
@@ -33,16 +34,16 @@ namespace Assets.Source {
         private void UpdateSolvable() {
             long currentBoard = _board.GetCurrentBoard();
             if (currentBoard == Constants.GoalBoard) {
-                _text = "Solved!";
+                _texture = Textures.Solved;
                 _solution = new long[0];
             } else {
-                _text = "Thinking...";
+                _texture = Textures.Thinking;
                 long[] solution = Solver.Solve(currentBoard);
                 bool solvable = solution.Length != 0;
                 lock(this) {
                     // make sure we only update if this board didn't change
                     if (_board.GetCurrentBoard() == currentBoard) {
-                        _text = solvable ? "Solvable" : "Not Solvable";
+                        _texture = solvable ? Textures.OnTrack : Textures.Fail;
                         _solution = solution;
                     }
                 }
@@ -75,6 +76,23 @@ namespace Assets.Source {
         // ReSharper disable once UnusedMember.Local
         // ReSharper disable once InconsistentNaming
         void OnGUI() {
+            GUI.Label(new Rect(10, 10, 120, 50), _texture);
+            if (GUI.Button(new Rect(52, 10, 32, 32), Textures.Undo)) {
+                _board.Undo();
+            }
+            if (GUI.Button(new Rect(94, 10, 32, 32), Textures.Redo)) {
+                _board.Redo();
+            }
+            if (GUI.Button(new Rect(136, 10, 32, 32), Textures.Hint)) {
+                _drawHints = !_drawHints;
+            }
+            if (GUI.Button(new Rect(178, 10, 32, 32), Textures.Magic)) {
+                _board.SolveNextStep();
+            }
+            if (GUI.Button(new Rect(220, 10, 32, 32), Textures.Reset)) {
+                _board.Reset();
+            }
+
             if (Event.current.Equals(Event.KeyboardEvent("z"))) {  // #^z
                 _board.Undo();
             }
@@ -84,18 +102,12 @@ namespace Assets.Source {
             if (Event.current.Equals(Event.KeyboardEvent("r"))) {  // #^r
                 _board.Reset();
             }
-            if (Event.current.Equals(Event.KeyboardEvent("h"))) {  // #^r
+            if (Event.current.Equals(Event.KeyboardEvent("h"))) {  // #^h
                 _drawHints = !_drawHints;
             }
             if (Event.current.Equals(Event.KeyboardEvent("s"))) {  // #^s
-                // find a solution and apply the next step
-                long[] solution = Solver.Solve(_board.GetCurrentBoard());
-                int[] move = Solver.GetNextMove(solution);
-                if (move != null) {
-                    _board.Move(move[0], move[1]);
-                }
+                _board.SolveNextStep();
             }
-            GUI.Label(new Rect(40, 40, 120, 50), _text);
         }
 
         // ReSharper disable once UnusedMember.Local
