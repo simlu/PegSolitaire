@@ -68,6 +68,7 @@ namespace Assets.Source {
         // Initialize everything
         // ReSharper disable once UnusedMember.Local
         void Start() {
+            Textures.Init();
             InitBoard();
             UpdateBoard();
         }
@@ -76,22 +77,32 @@ namespace Assets.Source {
         // ReSharper disable once UnusedMember.Local
         // ReSharper disable once InconsistentNaming
         void OnGUI() {
-            GUI.Label(new Rect(10, 10, 120, 50), _texture);
-            if (GUI.Button(new Rect(52, 10, 32, 32), Textures.Undo)) {
+            GUI.DrawTexture(new Rect(Screen.width * .01f, Screen.width * .01f, Screen.width * .05f, Screen.width * .05f), _texture, ScaleMode.ScaleToFit);
+
+            if (GUI.Button(new Rect(Screen.width * .07f, Screen.width * .01f, Screen.width * .05f, Screen.width * .05f), "")) {
                 _board.Undo();
             }
-            if (GUI.Button(new Rect(94, 10, 32, 32), Textures.Redo)) {
+            GUI.DrawTexture(new Rect(Screen.width * .07f, Screen.width * .01f, Screen.width * .05f, Screen.width * .05f), Textures.Undo, ScaleMode.ScaleToFit);
+            
+            if (GUI.Button(new Rect(Screen.width* .13f, Screen.width * .01f, Screen.width * .05f, Screen.width * .05f), "")) {
                 _board.Redo();
             }
-            if (GUI.Button(new Rect(136, 10, 32, 32), Textures.Hint)) {
+            GUI.DrawTexture(new Rect(Screen.width * .13f, Screen.width * .01f, Screen.width * .05f, Screen.width * .05f), Textures.Redo, ScaleMode.ScaleToFit);
+            
+            if (GUI.Button(new Rect(Screen.width * .19f, Screen.width * .01f, Screen.width * .05f, Screen.width * .05f), "")) {
                 _drawHints = !_drawHints;
             }
-            if (GUI.Button(new Rect(178, 10, 32, 32), Textures.Magic)) {
+            GUI.DrawTexture(new Rect(Screen.width * .19f, Screen.width * .01f, Screen.width * .05f, Screen.width * .05f), Textures.Hint, ScaleMode.ScaleToFit);
+            
+            if (GUI.Button(new Rect(Screen.width * .25f, Screen.width * .01f, Screen.width * .05f, Screen.width * .05f), "")) {
                 _board.SolveNextStep();
             }
-            if (GUI.Button(new Rect(220, 10, 32, 32), Textures.Reset)) {
+            GUI.DrawTexture(new Rect(Screen.width * .25f, Screen.width * .01f, Screen.width * .05f, Screen.width * .05f), Textures.Magic, ScaleMode.ScaleToFit);
+            
+            if (GUI.Button(new Rect(Screen.width * .31f, Screen.width * .01f, Screen.width * .05f, Screen.width * .05f), "")) {
                 _board.Reset();
             }
+            GUI.DrawTexture(new Rect(Screen.width * .31f, Screen.width * .01f, Screen.width * .05f, Screen.width * .05f), Textures.Reset, ScaleMode.ScaleToFit);
 
             if (Event.current.Equals(Event.KeyboardEvent("z"))) {  // #^z
                 _board.Undo();
