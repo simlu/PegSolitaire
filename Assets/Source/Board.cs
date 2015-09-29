@@ -40,10 +40,14 @@ namespace Assets.Source {
             return ((1L << id) & _boards[_idx]) != 0L;
         }
 
+        // check if a given position is valid (on the board)
+        public bool IsValidPos(int pos) {
+            return (Constants.ValidBoardCells & (1L << pos)) != 0;
+        }
+
         // check if a move is valid, assumes that "from" and "to" are on the board
         public bool IsValidMove(int from, int to) {
-            Debug.Assert((Constants.ValidBoardCells & (1L << from)) != 0);
-            Debug.Assert((Constants.ValidBoardCells & (1L << to)) != 0);
+            if (!IsValidPos(from) || !IsValidPos(to)) return false;
             // check if the "set" state are correct for this move
             if (!IsSet(from) || IsSet(to) || !IsSet((from + to)/2)) {
                 return false;

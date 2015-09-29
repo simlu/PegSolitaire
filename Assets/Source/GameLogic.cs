@@ -25,7 +25,7 @@ namespace Assets.Source {
         private void InitBoard() {
             foreach (int id in Constants.ValidBoardCellsList) {
                 var sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                sphere.AddComponent<BallLogic>().Init(id, _board);
+                sphere.AddComponent<BallLogic>().Init(id, _board, gameObject.GetComponent<Camera>());
                 _balls.Add(id, sphere);
             }
         }
@@ -33,9 +33,9 @@ namespace Assets.Source {
         // Check and display if the current board is solvable
         private void UpdateSolvable() {
             long currentBoard = _board.GetCurrentBoard();
+            _solution = new long[0];
             if (currentBoard == Constants.GoalBoard) {
                 _texture = Textures.Solved;
-                _solution = new long[0];
             } else {
                 _texture = Textures.Thinking;
                 long[] solution = Solver.Solve(currentBoard);
@@ -62,7 +62,11 @@ namespace Assets.Source {
         public GameLogic() {
             _board = new Board();
             // listen to board changes
-            _board.AddListener(new Board.EventListener(UpdateBoard));
+            _board.AddListener(new Board.EventListener(() => {
+                UpdateBoard();
+                // disable hints when board is updated
+                _drawHints = false;
+            }));
         }
 
         // Initialize everything
