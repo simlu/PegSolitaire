@@ -17,6 +17,9 @@ namespace Assets.Source {
         // current solution
         private long[] _solution = new long[0];
 
+        // true if we have cheated
+        private bool _cheat = false;
+
         // -------
 
         // All possible "pegs" on the board, pegs can be shown or hidden
@@ -81,48 +84,47 @@ namespace Assets.Source {
         // ReSharper disable once UnusedMember.Local
         // ReSharper disable once InconsistentNaming
         void OnGUI() {
-            GUI.DrawTexture(new Rect(Screen.width * .01f, Screen.width * .01f, Screen.width * .05f, Screen.width * .05f), _texture, ScaleMode.ScaleToFit);
+            GUI.DrawTexture(new Rect(Screen.height * .01f, Screen.height * .01f, Screen.height * .1f, Screen.height * .1f), _texture, ScaleMode.ScaleToFit);
 
-            if (GUI.Button(new Rect(Screen.width * .07f, Screen.width * .01f, Screen.width * .05f, Screen.width * .05f), "")) {
-                _board.Undo();
+            if (_cheat) {
+                GUI.DrawTexture(new Rect(Screen.height * .1f, Screen.height * .01f, Screen.height * .05f, Screen.height * .05f), Textures.Magic, ScaleMode.ScaleToFit);
             }
-            GUI.DrawTexture(new Rect(Screen.width * .07f, Screen.width * .01f, Screen.width * .05f, Screen.width * .05f), Textures.Undo, ScaleMode.ScaleToFit);
-            
-            if (GUI.Button(new Rect(Screen.width* .13f, Screen.width * .01f, Screen.width * .05f, Screen.width * .05f), "")) {
-                _board.Redo();
-            }
-            GUI.DrawTexture(new Rect(Screen.width * .13f, Screen.width * .01f, Screen.width * .05f, Screen.width * .05f), Textures.Redo, ScaleMode.ScaleToFit);
-            
-            if (GUI.Button(new Rect(Screen.width * .19f, Screen.width * .01f, Screen.width * .05f, Screen.width * .05f), "")) {
-                _drawHints = !_drawHints;
-            }
-            GUI.DrawTexture(new Rect(Screen.width * .19f, Screen.width * .01f, Screen.width * .05f, Screen.width * .05f), Textures.Hint, ScaleMode.ScaleToFit);
-            
-            if (GUI.Button(new Rect(Screen.width * .25f, Screen.width * .01f, Screen.width * .05f, Screen.width * .05f), "")) {
-                _board.SolveNextStep();
-            }
-            GUI.DrawTexture(new Rect(Screen.width * .25f, Screen.width * .01f, Screen.width * .05f, Screen.width * .05f), Textures.Magic, ScaleMode.ScaleToFit);
-            
-            if (GUI.Button(new Rect(Screen.width * .31f, Screen.width * .01f, Screen.width * .05f, Screen.width * .05f), "")) {
-                _board.Reset();
-            }
-            GUI.DrawTexture(new Rect(Screen.width * .31f, Screen.width * .01f, Screen.width * .05f, Screen.width * .05f), Textures.Reset, ScaleMode.ScaleToFit);
 
-            if (Event.current.Equals(Event.KeyboardEvent("z"))) {  // #^z
-                _board.Undo();
+            if (GUI.Button(new Rect(Screen.height * .01f, Screen.height * .12f, Screen.height * .1f, Screen.height * .1f), "") || Event.current.Equals(Event.KeyboardEvent("z"))) {
+                if (_board.Undo()) {
+                    _cheat = true;
+                }
             }
-            if (Event.current.Equals(Event.KeyboardEvent("y"))) {  // #^y
-                _board.Redo();
+            GUI.DrawTexture(new Rect(Screen.height * .01f, Screen.height * .12f, Screen.height * .1f, Screen.height * .1f), Textures.Undo, ScaleMode.ScaleToFit);
+            
+            if (GUI.Button(new Rect(Screen.height * .01f, Screen.height * .23f, Screen.height * .1f, Screen.height * .1f), "") || Event.current.Equals(Event.KeyboardEvent("y"))) {
+                if (_board.Redo()) {
+                    _cheat = true;
+                }
             }
-            if (Event.current.Equals(Event.KeyboardEvent("r"))) {  // #^r
-                _board.Reset();
-            }
-            if (Event.current.Equals(Event.KeyboardEvent("h"))) {  // #^h
+            GUI.DrawTexture(new Rect(Screen.height * .01f, Screen.height * .23f, Screen.height * .1f, Screen.height * .1f), Textures.Redo, ScaleMode.ScaleToFit);
+            
+            if (GUI.Button(new Rect(Screen.height * .01f, Screen.height * .34f, Screen.height * .1f, Screen.height * .1f), "") || Event.current.Equals(Event.KeyboardEvent("h"))) {
                 _drawHints = !_drawHints;
+                if (_drawHints && !_board.IsReset()) {
+                    _cheat = true;
+                }
             }
-            if (Event.current.Equals(Event.KeyboardEvent("s"))) {  // #^s
-                _board.SolveNextStep();
+            GUI.DrawTexture(new Rect(Screen.height * .01f, Screen.height * .34f, Screen.height * .1f, Screen.height * .1f), Textures.Hint, ScaleMode.ScaleToFit);
+            
+            if (GUI.Button(new Rect(Screen.height * .01f, Screen.height * .45f, Screen.height * .1f, Screen.height * .1f), "") || Event.current.Equals(Event.KeyboardEvent("s"))) {
+                if (_board.SolveNextStep()) {
+                    _cheat = true;
+                }
             }
+            GUI.DrawTexture(new Rect(Screen.height * .01f, Screen.height * .45f, Screen.height * .1f, Screen.height * .1f), Textures.Magic, ScaleMode.ScaleToFit);
+            
+            if (GUI.Button(new Rect(Screen.height * .01f, Screen.height * .56f, Screen.height * .1f, Screen.height * .1f), "") || Event.current.Equals(Event.KeyboardEvent("r"))) {
+                if (_board.Reset()) {
+                    _cheat = false;
+                }
+            }
+            GUI.DrawTexture(new Rect(Screen.height * .01f, Screen.height * .56f, Screen.height * .1f, Screen.height * .1f), Textures.Reset, ScaleMode.ScaleToFit);
         }
 
         // ReSharper disable once UnusedMember.Local

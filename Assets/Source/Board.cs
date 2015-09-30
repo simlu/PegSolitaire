@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Assets.Source {
@@ -62,28 +63,36 @@ namespace Assets.Source {
 
         // moves a peg from "from" to "to"
         public bool Move(int from, int to) {
-            if (IsValidMove(from, to)) {
+            bool result = IsValidMove(from, to);
+            if (result) {
                 long newBoard = _boards[_idx] ^ ((1L << from) | (1L << ((from + to)/2)) | (1L << to)); // apply move
                 // remove any previously undone boards from the list
                 _boards.RemoveRange(_idx + 1, _boards.Count - (_idx + 1));
                 _boards.Add(newBoard);
                 _idx++;
                 NotifyListeners();
-                return true;
             }
-            return false;
+            return result;
         }
 
         // undo a move if possible
-        public void Undo() {
-            _idx = _idx == 0 ? 0 : _idx - 1;
-            NotifyListeners();
+        public bool Undo() {
+            bool result = _idx != 0;
+            if (result) {
+                _idx = _idx - 1;
+                NotifyListeners();
+            }
+            return result;
         }
 
         // redo a move if possible
-        public void Redo() {
-            _idx = _idx == _boards.Count - 1 ? _idx : _idx + 1;
-            NotifyListeners();
+        public bool Redo() {
+            bool result = _idx != _boards.Count - 1;
+            if (result) {
+                _idx = _idx + 1;
+                NotifyListeners();
+            }
+            return result;
         }
 
         // retrieve the current board
@@ -91,21 +100,34 @@ namespace Assets.Source {
             return _boards[_idx];
         }
 
+        // return true if board is reset
+        public bool IsReset() {
+            return _boards.Count == 1;
+        }
+
         // reset the current board
-        public void Reset() {
-            _idx = 0;
-            _boards.RemoveRange(1, _boards.Count - 1);
-            NotifyListeners();
+        public bool Reset() {
+            bool result = !IsReset();
+            if (result) {
+                _idx = 0;
+                _boards.RemoveRange(1, _boards.Count - 1);
+                NotifyListeners();
+            }
+            return result;
         }
 
         // do a solution step
-        public void SolveNextStep() {
+        public bool SolveNextStep() {
             // find a solution and apply the next step
             long[] solution = Solver.Solve(_boards[_idx]);
-            int[] move = Solver.GetNextMove(solution);
-            if (move != null) {
-                Move(move[0], move[1]);
+            bool result = solution.Length != 0;
+            if (result) {
+                int[] move = Solver.GetNextMove(solution);
+                if (move != null) {
+                    Move(move[0], move[1]);
+                }
             }
+            return result;
         }
     }
 }
